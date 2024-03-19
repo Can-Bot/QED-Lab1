@@ -140,7 +140,7 @@ The following report details the methods, results, and analysis of Lab 1 of the 
 % This is how you can organize your document
 \section{Task 1: Energy Eigenvalues}
 \subsection{Calculating the Eigenvalues}
-In this task we were asked to calculate eigenvalues for a wave function in a well for quantum numbers up to \(n = 5\). The following code achieves that function.
+In this task we were asked to calculate eigenvalues for a wave function in a well for quantum numbers up to \(n = 5\). The eigenvalue of a given wave-function represents a singular value, i.e. the energy level of the system for a given quantum number, \(n\). The following code achieves that function.
 
 \begin{lstlisting}[language=Python, caption= Code used to obtain E_n values]
     from scipy import constants
@@ -198,19 +198,24 @@ plt.ylabel("$E$ (J)", fontsize=18)
 plt.savefig('E_n.png', bbox_inches='tight')
 plt.show()
 \end{lstlisting}
+\subsection{Expectations and Results}
+The code generates the following graph. The graph should depict distinct energy levels for each quantum number for a quantum particle within an infinite square well, with the energy level getting higher for increasing quantum numbers. Each energy level should have the relationship \(E_n = n^2 \pi^2 \eta^2 / 2ma^2\)\cite{griffith} which can be verified by checking if \(E_n = n^2 * E_1 \) holds true. 
 
-The code generates the following graph. The graph accurately depicts the expected \(E_n\) values with the relationship \(E_n = n^2 * E_1 \).
-\begin{figure}[H]          
-    \includegraphics[width=\columnwidth]{report/figures/E_n.png}
-    \caption{Energy eigenvalues, \(E_n\), for varying quantum numbers. }
-    \label{fig:enter-label}
+\begin{figure}[H]
+    \begin{center}
+        \includesvg[width=\columnwidth]{figures/E_n.svg}
+        \caption{Energy eigenvalues, \(E_n\), for varying quantum numbers. }
+        \label{fig:enter-label}
+    \end{center}
 \end{figure}
+As the eigenvalue of a wave-function is not dependant on time or space, the x axis is merely to be able to represent the different energy levels. The graph accurately depicts the expected \(E_n\) values with the relationship \(E_n = n^2 * E_1 \) holding true for each energy level.
 
 \section{Task 2: Eigenfunctions}
 \subsection{Calculating Eigenfunctions}
-For this task we were asked to plot a depiction of the normalised wavefunctions, i.e. eigenfunctions, for the given wave function, with the quantum number up to \(n=3\). 
+To represent the probability in location and the probability density of the given wave-function, we must calculate its eigenfunction.  The eigenfunction is given by \(2/a * sin(n*\pi*\psi(x)/a) \), where \(a\) is the length of the well.\cite{eisenberg}
+For this task we were asked to plot a depiction of the normalised wavefunctions, i.e. eigenfunctions, for the given wave function within an infinite square well, with the quantum number up to \(n=3\). 
 
-\begin{lstlisting}[language=Python, caption= Code used to plot findings]
+\begin{lstlisting}[language=Python, caption= Code used to calculate eigenvectors]
 def psi_n(q_number, x_values, a = 1 * 10e-10):
     """
     Creates a list of corresponding y values given a list of x values.
@@ -226,43 +231,25 @@ plt.figure(figsize=(10, 10))
 n_vals = np.linspace(1,3,3)
 for n in n_vals:
     plt.plot(x_list, psi_n(n, x_list), linewidth=2)
-
-# Set thicker frame
-plt.gca().spines['top'].set_linewidth(1.25)
-plt.gca().spines['right'].set_linewidth(1.25)
-plt.gca().spines['bottom'].set_linewidth(1.25)
-plt.gca().spines['left'].set_linewidth(1.25)
-
-# Set larger tick marks pointing in
-plt.tick_params(axis='both', which='both', direction='in', width=1.25, size = 6)
-
-# Set larger tick labels
-plt.xticks(fontsize=16)
-plt.yticks(fontsize=16)
-
-# Add legend with larger font
-plt.legend(["n = " + str(n) for n in n_vals], bbox_to_anchor=(1.05, 1.0), loc='upper left', fontsize=16)
-
-# Set larger axis labels
-plt.xlabel("$Well Length$ (m)", fontsize=18)
-plt.ylabel("$psi_n$", fontsize=18)
-
-# Save and show plot
-plt.savefig('psi_n.png', bbox_inches='tight')
+    
+#plotting code has been omitted
 \end{lstlisting}
 
 \subsubsection{Analysis of Graph Generated}
 \begin{figure}[H]
-\includegraphics[width=\columnwidth]{report/figures/psi_n.png}
+\includesvg[width=\columnwidth]{figures/psi_n.svg}
 \caption{Plots of eigenfunctions}
 \end{figure}
-From the figure, we can see that the behaviour of the wavefunction in the well. The frequency of the wave is proportional to the quantum number, which is as expected. 
+
+From the figure, we can see that the behaviour of the wavefunction in the well. 
+The eigenfunctions can be described as standing waves at various harmonics as they represent the quantum particle bounded within the walls of the square well. In this case, the position on the x axis represents location within the bounds of the well.
+We can see that each wave with a quantum number could be depicted as the harmonic of \(n=1\). This falls in line with the mathematical representation of the eigenfunctions, \(2/a * sin(n*\pi*\psi(x)/a) \), as increasing the quantum number would multiply the frequency component of the equation.  
 
 \subsection{Calculating Probability Density}
 \subsubsection{Calculating P_n}
-For the given wave functions, we then calculated the probability density functions, \(P_n = |\Psi_n(x)|^2\).
+To understand the eigenfunctions further, we calculate the probability density plots for the given wave functions. Probability density function is given by, \(P_n = |\psi_n(x)|^2\), or \(P_n = \psi_n(x) \cdot \psi_n(x)^*\) \cite{eisenberg}
 
-\begin{lstlisting}[language=Python, caption= Code used to plot findings]
+\begin{lstlisting}[language=Python, caption= Code used to plot Probability Densities]
 x_list = np.linspace(0, a, 100)
 # Increase figure size
 plt.figure(figsize=(10, 10))
@@ -271,36 +258,15 @@ n_vals = np.linspace(1,3,3)
 for n in n_vals:
     plt.plot(x_list, np.power(np.abs(psi_n(n, x_list)),2), linewidth=2)
 
-# Set thicker frame
-plt.gca().spines['top'].set_linewidth(1.25)
-plt.gca().spines['right'].set_linewidth(1.25)
-plt.gca().spines['bottom'].set_linewidth(1.25)
-plt.gca().spines['left'].set_linewidth(1.25)
-
-# Set larger tick marks pointing in
-plt.tick_params(axis='both', which='both', direction='in', width=1.25, size = 6)
-
-# Set larger tick labels
-plt.xticks(fontsize=16)
-plt.yticks(fontsize=16)
-
-# Add legend with larger font
-plt.legend(["n = " + str(n) for n in n_vals], bbox_to_anchor=(1.05, 1.0), loc='upper left', fontsize=16)
-
-# Set larger axis labels
-plt.xlabel("$Location$ (m)", fontsize=18)
-plt.ylabel("$P_n$", fontsize=18)
-
-# Save and show plot
-plt.savefig('P_n.png', bbox_inches='tight')
+#Plotting has been omitted for clarity
 \end{lstlisting}
 
-\subsubsection{Analysis of Graph Generated}
+\subsubsection{Analysis of Findings}
 \begin{figure}[H]
-\includegraphics[width=\columnwidth]{report/figures/P_n.png}
+\includesvg[width=\columnwidth]{figures/P_n.svg}
 \caption{Plots of P_n, n=1,2,3}
 \end{figure}
-From the figure, we can see the probability density of the wavefunctions in the well. The number of peaks in probability is proportional to the quantum number, which is as expected. 
+From the figure, we can see the probability density of the wavefunctions in the well. Similarly to the eigenfunctions, the number of oscillations in probability is proportional to the quantum number, which is expected as multiplying the wave-function with its complex conjugate, i.e. squaring the real component while discarding the imaginary component, would not change the general shape of the function in a real plot other than squaring the values. 
 
 \section{Task 3: Superposition}
 \subsubsection{Calculating \(\Psi(x,t)\)}
@@ -329,52 +295,12 @@ x_list = np.linspace(0, 1.1 * 10e-10, 500)
 t_list = np.linspace(0, 1, num_frames)
 Psi = Psi_s(psi_n, psi_m, q_number=2, x_values= x_list, t_values= t_list)
 
-plt.figure(1)
-
-fig, (ax1,ax2, ax3) = plt.subplots(1,3)
-ax1.plot( x_list, np.real(Psi[0]))
-ax1.set_title("t = "+ str(t_list[0]) )
-ax2.plot( x_list, np.real(Psi[num_frames//2]))
-ax2.set_title("t = "+str(t_list[num_frames//2]))
-ax3.plot( x_list, np.real(Psi[int(num_frames*0.9)]))
-ax3.set_title( "t = "+str(t_list[int(num_frames*0.9)]))
-ax1.sharey(ax2)
-ax3.sharey(ax2)
-
-fig.suptitle("Time Evolution of Superposition")
-plt.savefig('super_steps.png', bbox_inches='tight')
-plt.figure(2)
-# Create a figure and axis
-fig, ax = plt.subplots()
-line, = ax.plot(x_list, np.real(Psi[0]), label="Re(Psi_s)")
-
-# Set axis limits
-ax.set_xlim(0, a)
-
-# Add labels and title
-ax.set_xlabel("Position (m)")
-ax.set_ylabel("Wavefunction")
-ax.set_title("Time Evolution of Superposition")
-
-# Animation update function
-def update(frame):
-    line.set_ydata(np.real(Psi[frame]))
-    return line,
-
-# Create the animation
-ani = FuncAnimation(fig, update, frames=len(t_list), interval=200, blit=True)
-
-# Save the animation (optional)
-ani.save("wavefunction_animation.gif", writer="ffmpeg")
-
-# Show the animation
-plt.show()
-
+#Plotting and Animating omitted for clarity.
 \end{lstlisting}
 
 \subsubsection{Analysis of Graph Generated}
 \begin{figure}[H]
-\includegraphics[width=\columnwidth]{report/figures/super_steps.png}
+\includesvg[width=\columnwidth]{figures/super_steps.svg}
 \caption{Plots of \(\Psi(x,t)\) at different t values}
 \end{figure}
 From the figure, we can see the product of the superimposed wavefunctions in the well at different points in time. Due to superposition, we would expect a time dependent product of two non time dependent wave functions. The resulting plot accurately represents this. 
